@@ -1,0 +1,54 @@
+# Parámetros del motor de extracción y de validación. Edita aquí, no en el código.
+
+google_news:
+  hl: es-419
+  gl: CO
+  ceid: CO:es-419
+  # Ventana de búsqueda: Google News acepta when:1d, when:7d, etc.
+  ventana: 2d
+  # Consultas. TODO término va entre comillas: sin comillas Google trata cada palabra por
+  # separado ("Cámara" "Comercio" "Tolima") y trae notas de salud, sucesos, etc.
+  consultas:
+    - '"Cámara de Comercio de Ibagué"'
+    - '"CCI Ibagué"'
+    - '"@CamaraIbague"'
+    - '"Cámara de Comercio" "Ibagué" "Tolima"'
+
+# Eventos anuales que apoya la CCI. Una nota que los menciona es relevante aunque no cite a
+# la Cámara (regla de negocio de Comunicaciones). `buscar: true` agrega una consulta propia.
+# Agrega alias con las variantes reales en que los medios escriben el nombre.
+eventos:
+  - nombre: Ibagué Negocios y Moda
+    alias: ["Ibagué, Negocios y Moda", "Negocios y Moda"]
+    buscar: true
+  - nombre: Concurso Nacional Cacao de Oro
+    alias: ["Cacao de Oro"]
+    buscar: true
+
+# Reglas de relevancia (se comparan sobre texto sin tildes ni mayúsculas).
+relevancia:
+  # Nombre completo o identificadores propios de la CCI: coincidencia directa = Válida (alta).
+  entidad_fuerte:
+    - cámara de comercio de ibagué
+    - cámara de comercio ibagué
+    - cci ibagué
+    - camaraibague
+  # "Cámara de Comercio" a secas o "CCI" solo cuentan si Ibagué/Tolima aparece cerca.
+  # Si aparecen sin contexto local, la nota queda en "Revisar" (no se descarta a ciegas).
+  contexto_local: [ibagué, tolima]
+  ventana_contexto: 300      # caracteres a cada lado de la coincidencia débil
+  # "Cámara de Comercio de <otra ciudad>" NO cuenta (Bogotá, Cali, etc.).
+
+# Dominios a ignorar (agregadores, sitios propios, etc.)
+dominios_excluidos:
+  - camaraibague.org
+  - camaraibague.org.co
+
+# Resolución de enlaces de Google News a la URL real del medio (googlenewsdecoder, gratuito).
+resolver_urls: true
+
+# Descarga del cuerpo de la nota para validar relevancia
+articulos:
+  timeout: 15
+  max_bytes: 2000000
+  pausa: 1.0                 # segundos entre descargas (cortesía con los medios)
